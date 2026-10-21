@@ -5,7 +5,7 @@ const day = (page: Page, name: string) => page.getByRole('region', { name: new R
 
 async function addEntry(page: Page, dayName: string, hours: string) {
   await day(page, dayName).getByRole('button', { name: /Add entry/ }).click();
-  await page.getByLabel(/^Hours/).fill(hours);
+  await page.getByRole('textbox', { name: /^Hours/ }).fill(hours);
   await page.getByRole('button', { name: 'Save entry' }).click();
   await expect(page.getByText('Entry saved')).toBeVisible();
 }
@@ -74,7 +74,7 @@ test('daily cap is enforced with a clear message', async ({ browser }) => {
   await emp.getByRole('button', { name: /New timesheet/ }).click();
   await addEntry(emp, 'Wed', '6');
   await day(emp, 'Wed').getByRole('button', { name: /Add entry/ }).click();
-  await emp.getByLabel(/^Hours/).fill('3');
+  await emp.getByRole('textbox', { name: /^Hours/ }).fill('3');
   await emp.getByRole('button', { name: 'Save entry' }).click();
   await expect(emp.getByRole('alert')).toContainText('cannot exceed 8.5 hours');
   await expectAccessible(emp);
