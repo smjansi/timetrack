@@ -3,9 +3,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth/AuthProvider';
 import { ToastProvider } from './components/Toast';
 import { Shell } from './components/Shell';
+import { ApprovalDetail } from './pages/ApprovalDetail';
+import { Approvals } from './pages/Approvals';
 import { ComingSoon } from './pages/ComingSoon';
 import { EntryForm } from './pages/EntryForm';
 import { Home } from './pages/Home';
+import { Reports } from './pages/Reports';
 import { Summary } from './pages/Summary';
 import { Weekly } from './pages/Weekly';
 import { Login } from './pages/Login';
@@ -28,8 +31,9 @@ export function App() {
                 <Route path="timesheets/:id/entries/new" element={<EntryForm />} />
                 <Route path="timesheets/:id/entries/:entryId" element={<EntryForm />} />
                 <Route path="summary" element={<Summary />} />
-                <Route path="approvals" element={<ComingSoon title="Approvals" />} />
-                <Route path="reports" element={<ComingSoon title="Entries report" />} />
+                <Route path="approvals" element={<Approvals />} />
+                <Route path="approvals/:id" element={<ApprovalDetail />} />
+                <Route path="reports" element={<Reports />} />
                 <Route path="*" element={<ComingSoon title="Page not found" />} />
               </Route>
             </Routes>

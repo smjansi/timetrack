@@ -39,6 +39,12 @@ export function dayLabel(weekStart: string, index: number): string {
   return `${DAY_NAMES[index]} ${formatShort(addDays(weekStart, index))}`;
 }
 
+/** "Wed 14 Oct" for a date inside the week starting `weekStart`. */
+export function dayLabelFor(weekStart: string, date: string): string {
+  const index = Math.round((toUtc(date).getTime() - toUtc(weekStart).getTime()) / 86400000);
+  return dayLabel(weekStart, index);
+}
+
 /** "12 Oct – 18 Oct 2026" */
 export function weekRange(weekStart: string): string {
   const end = addDays(weekStart, 6);

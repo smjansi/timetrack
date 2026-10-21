@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  addDays, dayLabel, isoWeekNumber, mondayOf, monthStart, monthTitle, todayIso, weekRange,
+  addDays, dayLabel, dayLabelFor, isoWeekNumber, mondayOf, monthStart, monthTitle, todayIso, weekRange,
 } from './dates';
 
 describe('dates', () => {
@@ -31,5 +31,11 @@ describe('dates', () => {
   });
   it('uses the local calendar date', () => {
     expect(todayIso(new Date(2026, 9, 5, 23, 59))).toBe('2026-10-05');
+  });
+});
+
+describe('dayLabelFor', () => {
+  it('labels a date within its week', () => {
+    expect(dayLabelFor('2026-10-12', '2026-10-14')).toBe('Wed 14 Oct');
   });
 });
