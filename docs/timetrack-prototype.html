@@ -1,0 +1,862 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TimeTrack Mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:#201f1e}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #0078D4;outline-offset:2px}
+</style>
+</helmet>
+<div style="position:relative;width:390px;height:844px;display:flex;flex-direction:column;background:#f3f2f1;box-sizing:border-box;overflow:hidden">
+<sc-if value="{{isLogin}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;overflow-y:auto;background:#ffffff;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:32px 24px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:14px">
+<div style="width:52px;height:52px;border-radius:15px;background:#0078D4;color:#ffffff;display:flex;align-items:center;justify-content:center;flex:none"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
+<div><h1 style="margin:0;font-size:28px;font-weight:600">TimeTrack</h1><div style="font-size:14px;color:#605e5c;margin-top:2px">Sign in with your work email</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label for="login-email" style="font-size:15px;font-weight:600">Email</label>
+<select id="login-email" onChange="{{onLoginEmail}}" style="height:52px;padding:0 14px;border:1.5px solid #8a8886;border-radius:10px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box;width:100%">
+<sc-for list="{{loginOptions}}" as="o" hint-placeholder-count="2">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div>
+<div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid #e1dfdd;border-radius:14px;background:#faf9f8">
+<span aria-hidden="true" style="width:48px;height:48px;border-radius:24px;background:{{loginBg}};color:{{loginFg}};font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">{{loginInitials}}</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px;font-weight:600">{{loginName}}</span><span style="padding:3px 10px;border-radius:999px;background:{{loginBg}};color:{{loginFg}};font-size:12px;font-weight:600">{{loginRole}}</span></div>
+<div style="font-size:14px;line-height:1.4;color:#323130">{{loginDesc}}</div>
+</div>
+</div>
+<button type="button" onClick="{{signIn}}" style="height:52px;border-radius:10px;border:0;background:#0078D4;color:#ffffff;font-family:inherit;font-size:17px;font-weight:600;cursor:pointer">Sign in</button>
+<p style="margin:0;font-size:13px;line-height:1.4;color:#605e5c">Prototype only: the role is looked up from the signed-in email, as the real app does with the signed-in user's email. Tap your initials at the top to switch user.</p>
+</main>
+</sc-if>
+<sc-if value="{{isHome}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">My Timesheet</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{userName}} · {{userRole}} · sample data</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:10px">
+<div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">This week</div><div style="font-size:20px;font-weight:600">{{thisWeekHours}} hrs</div></div><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">Submitted</div><div style="font-size:20px;font-weight:600">{{submittedCount}}</div></div><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">Rejected</div><div style="font-size:20px;font-weight:600">{{rejectedCount}}</div></div>
+</div>
+<button type="button" onClick="{{newTimesheet}}" style="flex:none;height:48px;border-radius:10px;border:0;background:#0078D4;color:#ffffff;font-family:inherit;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New timesheet</button>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="4">
+<button type="button" onClick="{{it.open}}" style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;flex:none;width:100%;text-align:left;padding:14px 16px;font-family:inherit;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px">
+<span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:16px;font-weight:600">{{it.week}}</span><span style="font-size:13px;color:{{it.subColor}};line-height:1.35">{{it.sub}}</span></span>
+<span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none"><span style="font-size:16px;font-weight:600">{{it.hours}}</span><span style="display:inline-block;padding:3px 10px;border-radius:999px;color:#ffffff;font-size:12px;font-weight:600;white-space:nowrap;background:{{it.badge}}">{{it.status}}</span></span>
+</button>
+</sc-for></div>
+</main>
+</sc-if>
+<sc-if value="{{isWeekly}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<button type="button" aria-label="Back" onClick="{{goHome}}" style="width:44px;height:44px;flex:none;border:0;border-radius:10px;background:transparent;color:#201f1e;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;margin-left:-8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button><div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">Weekly timesheet</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{weekRange}}</div></div>
+<span style="display:inline-block;padding:3px 10px;border-radius:999px;color:#ffffff;font-size:12px;font-weight:600;white-space:nowrap;background:{{badgeBg}}">{{statusText}}</span>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px"><span style="font-size:14px;color:#605e5c">Week total</span><span style="font-size:24px;font-weight:600">{{weekTotal}} hrs</span></div>
+<sc-if value="{{showRejectNote}}" hint-placeholder-val="{{ false }}"><div role="status" style="flex:none;padding:12px 14px;border-radius:10px;background:#fde7e9;color:#a4262c;font-size:14px;font-weight:600;line-height:1.4">Manager comment: {{rejectNote}}</div></sc-if>
+<sc-for list="{{days}}" as="day" hint-placeholder-count="7">
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;flex:none;overflow:hidden">
+<header style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:{{day.headBg}}">
+<span style="font-size:16px;font-weight:600">{{day.name}} <span style="font-size:13px;font-weight:400;color:#605e5c">{{day.date}}</span></span>
+<span style="display:flex;align-items:center;gap:8px"><sc-if value="{{day.review}}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;padding:3px 10px;border-radius:999px;color:#ffffff;font-size:12px;font-weight:600;white-space:nowrap;background:{{day.reviewBg}}">{{day.reviewLabel}}</span></sc-if><span style="font-size:15px;font-weight:600">{{day.total}}</span></span>
+</header>
+<div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{day.entries}}" as="en" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;border:1px solid #e1dfdd;border-radius:10px;background:#ffffff;min-height:52px">
+<sc-if value="{{en.canEdit}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{en.edit}}" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;padding:6px 6px 6px 12px;border:0;background:transparent;font-family:inherit;color:inherit;cursor:pointer;min-height:52px">
+<span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:600;line-height:1.25">{{en.project}}</span><span style="font-size:13px;color:#605e5c">{{en.task}}</span><sc-if value="{{en.rejected}}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;margin-top:3px;padding:1px 8px;border-radius:999px;background:#A4262C;color:#ffffff;font-size:11px;font-weight:600">Rejected</span></sc-if></span>
+<span style="font-size:15px;font-weight:600;flex:none">{{en.hours}}</span>
+</button>
+</sc-if>
+<sc-if value="{{en.readOnly}}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;min-height:52px">
+<span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:600;line-height:1.25">{{en.project}}</span><span style="font-size:13px;color:#605e5c">{{en.task}}</span><sc-if value="{{en.rejected}}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;margin-top:3px;padding:1px 8px;border-radius:999px;background:#A4262C;color:#ffffff;font-size:11px;font-weight:600">Rejected</span></sc-if></span>
+<span style="font-size:15px;font-weight:600;flex:none">{{en.hours}}</span>
+</div>
+</sc-if>
+<sc-if value="{{en.canDelete}}" hint-placeholder-val="{{ true }}">
+<button type="button" aria-label="Delete entry" onClick="{{en.remove}}" style="width:44px;height:44px;flex:none;border:0;background:transparent;color:#A4262C;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"></path></svg></button>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{day.empty}}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#605e5c">No entries</div></sc-if>
+<sc-if value="{{day.canEdit}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{day.add}}" style="min-height:44px;border:1.5px dashed #0078D4;border-radius:10px;background:transparent;color:#005a9e;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add entry</button>
+</sc-if>
+</div>
+</section>
+</sc-for></div><footer style="flex:none;padding:10px 16px 12px;background:#ffffff;border-top:1px solid #e1dfdd;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12.5px;color:#605e5c;line-height:1.35">{{footNote}}</span>
+<button type="button" onClick="{{submit}}" disabled="{{submitOff}}" style="height:48px;border-radius:10px;border:0;background:#0078D4;color:#ffffff;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;opacity:{{btnOpacity}}">{{submitLabel}}</button>
+</footer>
+</main>
+</sc-if>
+<sc-if value="{{isEntry}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<button type="button" aria-label="Back" onClick="{{goWeekly}}" style="width:44px;height:44px;flex:none;border:0;border-radius:10px;background:transparent;color:#201f1e;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;margin-left:-8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button><div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">{{entryTitle}}</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{weekRange}}</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+<label for="f-date" style="font-size:14px;font-weight:600">Date</label>
+<select id="f-date" onChange="{{onDate}}" style="height:48px;width:100%;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box">
+<sc-for list="{{dateOptions}}" as="o" hint-placeholder-count="5">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+<label for="f-project" style="font-size:14px;font-weight:600">Project</label>
+<select id="f-project" onChange="{{onProject}}" style="height:48px;width:100%;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box">
+<sc-for list="{{projectOptions}}" as="o" hint-placeholder-count="5">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div>
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+<label for="f-task" style="font-size:14px;font-weight:600">Task</label>
+<select id="f-task" onChange="{{onTask}}" style="height:48px;width:100%;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box">
+<sc-for list="{{taskOptions}}" as="o" hint-placeholder-count="5">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1"><label for="f-hours" style="font-size:14px;font-weight:600">Hours (0.5 to 8.5)</label><input id="f-hours" type="text" inputmode="decimal" placeholder="e.g. 7.5" value="{{fHours}}" onChange="{{onHours}}" style="height:48px;padding:0 12px;border:1px solid {{hoursBorder}};border-radius:8px;font-size:16px;font-family:inherit;color:#201f1e;box-sizing:border-box;width:100%"></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label for="f-notes" style="font-size:14px;font-weight:600">Notes</label><textarea id="f-notes" placeholder="Optional" value="{{fNotes}}" onChange="{{onNotes}}" style="height:80px;padding:12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;color:#201f1e;resize:none;box-sizing:border-box;width:100%"></textarea></div>
+<div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:8px;background:#faf9f8">
+<div style="font-size:13px;color:#605e5c">Day summary</div>
+<div style="font-size:17px;font-weight:600">{{dayLabel}}</div>
+<div style="height:8px;border-radius:4px;background:#e1dfdd;overflow:hidden"><div style="height:100%;background:#0078D4;width:{{pct}}%"></div></div>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:#605e5c">Already logged</span><strong>{{logged}} hrs</strong></div>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:#605e5c">Remaining (of 8.5)</span><strong>{{remaining}} hrs</strong></div>
+<div style="font-size:13px;color:#605e5c;border-top:1px solid #e1dfdd;padding-top:8px">{{afterText}}</div>
+</div>
+<sc-if value="{{hasFormError}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:12px 14px;border-radius:8px;background:#fde7e9;color:#a4262c;font-size:14px;font-weight:600">{{fError}}</div></sc-if></div><footer style="flex:none;padding:10px 16px 12px;background:#ffffff;border-top:1px solid #e1dfdd;display:flex;gap:10px">
+<button type="button" onClick="{{goWeekly}}" style="flex:1;height:48px;border-radius:10px;border:1px solid #8a8886;background:#ffffff;color:#201f1e;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer">Cancel</button>
+<button type="button" onClick="{{saveEntry}}" style="flex:1;height:48px;border-radius:10px;border:0;background:#0078D4;color:#ffffff;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer">Save entry</button>
+</footer>
+</main>
+</sc-if>
+<sc-if value="{{isApprovalsList}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">Approvals</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{userName}} · submitted timesheets from your team</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><sc-for list="{{pending}}" as="p" hint-placeholder-count="4">
+<button type="button" onClick="{{p.select}}" style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;flex:none;width:100%;text-align:left;padding:14px 16px;font-family:inherit;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px">
+<span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:17px;font-weight:600">{{p.name}}</span><span style="font-size:13px;color:#605e5c">{{p.week}}</span><span style="font-size:13px;color:#605e5c">{{p.progress}}</span></span>
+<span style="font-size:16px;font-weight:600;flex:none">{{p.total}}</span>
+</button>
+</sc-for>
+<sc-if value="{{noneLeft}}" hint-placeholder-val="{{ false }}"><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:24px 16px;text-align:center;font-size:15px;color:#605e5c">Nothing waiting for review.</div></sc-if></div>
+</main>
+</sc-if>
+<sc-if value="{{showApprDetail}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<button type="button" aria-label="Back" onClick="{{backAppr}}" style="width:44px;height:44px;flex:none;border:0;border-radius:10px;background:transparent;color:#201f1e;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;margin-left:-8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button><div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">{{sel.name}}</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{sel.week}} · {{sel.total}}</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><div style="font-size:13px;color:#605e5c;line-height:1.4">Review each day: approve it, or reject it with a comment. The timesheet is finished once every day has a decision.</div>
+<sc-for list="{{sel.days}}" as="d" hint-placeholder-count="5">
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;flex:none;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-size:16px;font-weight:600">{{d.label}}</span><span style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;color:#605e5c">{{d.hours}}</span><span style="display:inline-block;padding:3px 10px;border-radius:999px;color:#ffffff;font-size:12px;font-weight:600;white-space:nowrap;background:{{d.badge}}">{{d.status}}</span></span></div>
+<sc-for list="{{d.rows}}" as="r" hint-placeholder-count="1"><div style="font-size:14px;display:flex;justify-content:space-between;gap:8px"><span><strong>{{r.p}}</strong> <span style="color:#605e5c">· {{r.t}}</span></span><span>{{r.h}} h</span></div></sc-for>
+<input type="text" aria-label="Comment (to reject)" placeholder="Comment (to reject)" value="{{d.comment}}" onChange="{{d.onComment}}" style="height:48px;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;color:#201f1e;box-sizing:border-box;width:100%">
+<sc-if value="{{d.hasError}}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:13px;font-weight:600;color:#a4262c">{{d.error}}</div></sc-if>
+<div style="display:flex;gap:10px">
+<button type="button" onClick="{{d.reject}}" style="flex:1;height:48px;border-radius:10px;border:1.5px solid #A4262C;background:#ffffff;color:#A4262C;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer">Reject</button>
+<button type="button" onClick="{{d.approve}}" style="flex:1;height:48px;border-radius:10px;border:0;background:#107C10;color:#ffffff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer">Approve</button>
+</div>
+</section>
+</sc-for></div>
+</main>
+</sc-if>
+<sc-if value="{{isReports}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">Entries report</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{userName}} · all employees · sample data</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;box-sizing:border-box"><div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+<label for="r-emp" style="font-size:14px;font-weight:600">Employee</label>
+<select id="r-emp" onChange="{{onREmp}}" style="height:48px;width:100%;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box">
+<sc-for list="{{empOptions}}" as="o" hint-placeholder-count="5">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div><div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+<label for="r-status" style="font-size:14px;font-weight:600">Status</label>
+<select id="r-status" onChange="{{onRStatus}}" style="height:48px;width:100%;padding:0 12px;border:1px solid #8a8886;border-radius:8px;font-size:16px;font-family:inherit;background:#ffffff;color:#201f1e;box-sizing:border-box">
+<sc-for list="{{statusOptions}}" as="o" hint-placeholder-count="5">
+<option value="{{o.value}}" selected="{{o.selected}}">{{o.label}}</option>
+</sc-for>
+</select>
+</div></div>
+<div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px"><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">Entries shown</div><div style="font-size:20px;font-weight:600">{{reportCount}}</div></div><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">Total hours</div><div style="font-size:20px;font-weight:600">{{reportHours}} hrs</div></div></div>
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:15px;font-weight:600">Hours by project</div>
+<sc-for list="{{chartProject}}" as="b" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:112px 1fr 44px;align-items:center;gap:8px">
+<span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{b.name}}</span>
+<div style="height:14px;border-radius:5px;background:#f3f2f1;overflow:hidden"><div style="height:100%;border-radius:5px;background:{{b.color}};width:{{b.pct}}%"></div></div>
+<span style="font-size:13px;font-weight:600;text-align:right">{{b.hours}} h</span>
+</div>
+</sc-for>
+<sc-if value="{{noChart}}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#605e5c">No entries for this filter</div></sc-if>
+</section>
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:15px;font-weight:600">Hours by employee</div>
+<sc-for list="{{chartEmp}}" as="b" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:112px 1fr 44px;align-items:center;gap:8px">
+<span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{b.name}}</span>
+<div style="height:14px;border-radius:5px;background:#f3f2f1;overflow:hidden"><div style="height:100%;border-radius:5px;background:{{b.color}};width:{{b.pct}}%"></div></div>
+<span style="font-size:13px;font-weight:600;text-align:right">{{b.hours}} h</span>
+</div>
+</sc-for>
+<sc-if value="{{noChart}}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#605e5c">No entries for this filter</div></sc-if>
+</section>
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:15px;font-weight:600">Hours by status</div>
+<sc-for list="{{chartStatus}}" as="b" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:112px 1fr 44px;align-items:center;gap:8px">
+<span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{b.name}}</span>
+<div style="height:14px;border-radius:5px;background:#f3f2f1;overflow:hidden"><div style="height:100%;border-radius:5px;background:{{b.color}};width:{{b.pct}}%"></div></div>
+<span style="font-size:13px;font-weight:600;text-align:right">{{b.hours}} h</span>
+</div>
+</sc-for>
+<sc-if value="{{noChart}}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#605e5c">No entries for this filter</div></sc-if>
+</section>
+<sc-for list="{{reportRows}}" as="r" hint-placeholder-count="6">
+<div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;flex:none;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:15px;font-weight:600">{{r.emp}} <span style="font-size:13px;font-weight:400;color:#605e5c">{{r.date}}</span></span><span style="font-size:14px">{{r.project}} <span style="color:#605e5c">· {{r.task}}</span></span></span>
+<span style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none"><span style="font-size:15px;font-weight:600">{{r.hours}} h</span><span style="display:inline-block;padding:3px 10px;border-radius:999px;color:#ffffff;font-size:12px;font-weight:600;white-space:nowrap;background:{{r.badge}}">{{r.status}}</span></span>
+</div>
+</sc-for>
+<sc-if value="{{noChart}}" hint-placeholder-val="{{ false }}"><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:20px 16px;text-align:center;font-size:14px;color:#605e5c">No entries match these filters.</div></sc-if></div>
+</main>
+</sc-if>
+<sc-if value="{{isSummary}}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<header style="flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#ffffff;border-bottom:1px solid #e1dfdd;box-sizing:border-box;min-height:64px">
+<div style="flex:1;min-width:0"><h1 style="margin:0;font-size:20px;font-weight:600;line-height:1.2">My summary</h1><div style="font-size:13px;color:#605e5c;margin-top:2px">{{userName}} · hours by project · sample data</div></div>
+<button type="button" aria-label="Switch user" onClick="{{switchUser}}" style="width:40px;height:40px;flex:none;border:0;border-radius:20px;background:#0078D4;color:#ffffff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0">{{userInitials}}</button>
+</header><div style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box"><div style="display:flex;padding:4px;border-radius:12px;background:#e1dfdd;gap:4px">
+<button type="button" aria-pressed="{{thisPressed}}" onClick="{{showThis}}" style="flex:1;height:44px;border-radius:9px;border:0;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;background:{{thisBg}};color:{{thisFg}}">This month</button>
+<button type="button" aria-pressed="{{lastPressed}}" onClick="{{showLast}}" style="flex:1;height:44px;border-radius:9px;border:0;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;background:{{lastBg}};color:{{lastFg}}">Last month</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px"><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">{{monthName}} total</div><div style="font-size:20px;font-weight:600">{{sumTotal}} hrs</div></div><div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:12px;color:#605e5c">Projects</div><div style="font-size:20px;font-weight:600">{{projectCount}}</div></div></div>
+<div style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:4px"><div style="font-size:12px;color:#605e5c">Most hours</div><div style="font-size:18px;font-weight:600">{{topName}}</div><div style="font-size:14px;color:#605e5c">{{topHours}} hrs</div></div>
+<section style="background:#ffffff;border:1px solid #e1dfdd;border-radius:12px;box-sizing:border-box;padding:14px 16px;display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600">Hours by project · {{monthName}} 2026</div>
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:112px 1fr 44px;align-items:center;gap:8px"><span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{b.name}}</span><div style="height:16px;border-radius:6px;background:#f3f2f1;overflow:hidden"><div style="height:100%;border-radius:6px;background:#0078D4;width:{{b.pct}}%"></div></div><span style="font-size:13px;font-weight:600;text-align:right">{{b.hours}} h</span></div>
+</sc-for></section></div>
+</main>
+</sc-if>
+<sc-if value="{{showNav}}" hint-placeholder-val="{{ true }}">
+<nav aria-label="Main" style="flex:none;display:flex;background:#ffffff;border-top:1px solid #e1dfdd">
+<button type="button" aria-label="My Timesheet" onClick="{{goHome}}" style="position:relative;flex:1;min-width:0;height:64px;border:0;background:transparent;color:{{tabHomeFg}};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg><span>My Timesheet</span></button>
+<sc-if value="{{isEmployee}}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Summary" onClick="{{goSummary}}" style="position:relative;flex:1;min-width:0;height:64px;border:0;background:transparent;color:{{tabSummaryFg}};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"></path></svg><span>Summary</span></button></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Approvals" onClick="{{goApprovals}}" style="position:relative;flex:1;min-width:0;height:64px;border:0;background:transparent;color:{{tabApprovalsFg}};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Approvals</span><sc-if value="{{hasPending}}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:6px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:#D13438;color:#ffffff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box">{{pendingCount}}</span></sc-if></button><button type="button" aria-label="Reports" onClick="{{goReports}}" style="position:relative;flex:1;min-width:0;height:64px;border:0;background:transparent;color:{{tabReportsFg}};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5M9 13h6M9 17h6"></path></svg><span>Reports</span></button></sc-if>
+</nav>
+</sc-if>
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}"><div role="status" style="position:absolute;left:16px;right:16px;bottom:84px;background:#201f1e;color:#ffffff;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;text-align:center">{{toast}}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const USERS = {
+employee: { key: 'employee', name: 'Alex', role: 'Employee', initials: 'A', email: 'alex@contoso.test' },
+manager: { key: 'manager', name: 'Priya', role: 'Manager', initials: 'P', email: 'priya@contoso.test' }
+};
+
+const LOGIN_INFO = {
+employee: { bg: '#deecf9', fg: '#004578', desc: 'Enter weekly timesheets, then view your entries and their approval status.' },
+manager: { bg: '#dff6dd', fg: '#0b5a0b', desc: 'Enter your own timesheet, review your team\'s entries, approve or reject, and open the entries report.' }
+};
+const userByEmail = (em) => Object.keys(USERS).map((k) => USERS[k]).find((u) => u.email === em) || USERS.employee;
+
+const MAX_DAY = 8.5;
+const isRej = (t, day) => {
+const rv = t.dayReview && t.dayReview[day];
+if (rv) return rv.status === 'Rejected';
+return t.status === 'Rejected';
+};
+const entryRej = (t, e) => isRej(t, e.day) && !e.added;
+const okSum = (t, es) => es.filter((e) => !entryRej(t, e)).reduce((a, e) => a + e.hours, 0);
+const D_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const M_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const dayLabel = (start, d) => {
+const x = new Date(start.getFullYear(), start.getMonth(), start.getDate() + d);
+return D_NAMES[d] + ' ' + x.getDate() + ' ' + M_NAMES[x.getMonth()];
+};
+
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.nextId = 100;
+const mk = (list) => list.map((r) => ({ id: this.nextId++, day: r[0], project: r[1], task: r[2], hours: r[3], notes: '' }));
+const ts = (id, emp, y, m, d, status, comment, rows) => ({ id: id, emp: emp, start: new Date(y, m, d), status: status, comment: comment, entries: mk(rows) });
+this.state = {
+user: null,
+loginEmail: 'alex@contoso.test',
+screen: 'login',
+tsId: 1,
+editId: null,
+period: 'this',
+toast: '',
+fDate: '4',
+fProject: 'Website Redesign',
+fTask: 'Development',
+fHours: '',
+fNotes: '',
+fError: '',
+selectedId: null,
+apprView: 'list',
+comment: '',
+aError: '',
+dayComments: {},
+dayErr: {},
+rEmp: 'All',
+rStatus: 'All',
+timesheets: [
+ts(1, 'Alex', 2026, 9, 12, 'Draft', '', [
+[0, 'Website Redesign', 'Development', 6],
+[0, 'Internal Training', 'Admin', 2],
+[1, 'Mobile App', 'Testing', 8],
+[2, 'CRM Migration', 'Meeting', 3],
+[2, 'CRM Migration', 'Development', 5],
+[3, 'Support Ops', 'Support', 7.5],
+[4, 'Website Redesign', 'Development', 8]
+]),
+ts(2, 'Alex', 2026, 9, 5, 'Submitted', '', [
+[0, 'Website Redesign', 'Development', 8],
+[1, 'Website Redesign', 'Development', 8],
+[2, 'CRM Migration', 'Development', 8],
+[3, 'Mobile App', 'Testing', 8],
+[4, 'Support Ops', 'Support', 8]
+]),
+ts(3, 'Alex', 2026, 8, 28, 'Approved', '', [
+[0, 'CRM Migration', 'Development', 8],
+[1, 'CRM Migration', 'Development', 8],
+[2, 'Mobile App', 'Testing', 8],
+[3, 'Support Ops', 'Support', 7.5],
+[4, 'Internal Training', 'Admin', 7]
+]),
+ts(4, 'Alex', 2026, 8, 21, 'Rejected', 'Please split Wednesday hours by project.', [
+[0, 'Website Redesign', 'Development', 7],
+[1, 'Website Redesign', 'Development', 7],
+[2, 'CRM Migration', 'Development', 8],
+[3, 'Mobile App', 'Testing', 7],
+[4, 'Support Ops', 'Support', 7]
+]),
+ts(5, 'Alex', 2026, 8, 14, 'Approved', '', [
+[0, 'Mobile App', 'Development', 8],
+[1, 'Mobile App', 'Development', 8],
+[2, 'Mobile App', 'Testing', 8],
+[3, 'Website Redesign', 'Development', 8],
+[4, 'Internal Training', 'Admin', 8]
+]),
+ts(6, 'Jordan', 2026, 9, 5, 'Submitted', '', [
+[0, 'Website Redesign', 'Development', 8],
+[1, 'Website Redesign', 'Development', 8],
+[2, 'CRM Migration', 'Meeting', 2],
+[2, 'CRM Migration', 'Development', 6],
+[3, 'Mobile App', 'Testing', 8],
+[4, 'Mobile App', 'Testing', 8]
+]),
+ts(7, 'Jordan', 2026, 8, 28, 'Approved', '', [
+[0, 'Mobile App', 'Development', 8],
+[1, 'Mobile App', 'Development', 8],
+[2, 'Mobile App', 'Testing', 8],
+[3, 'Mobile App', 'Testing', 8],
+[4, 'Internal Training', 'Admin', 8]
+]),
+ts(8, 'Jordan', 2026, 9, 12, 'Draft', '', [
+[0, 'Website Redesign', 'Development', 8],
+[1, 'Website Redesign', 'Development', 8],
+[2, 'Mobile App', 'Meeting', 3]
+]),
+ts(9, 'Sam', 2026, 9, 5, 'Submitted', '', [
+[0, 'Support Ops', 'Support', 7.5],
+[1, 'Support Ops', 'Support', 8],
+[2, 'Internal Training', 'Admin', 4],
+[2, 'Support Ops', 'Support', 4],
+[3, 'Support Ops', 'Support', 7],
+[4, 'Mobile App', 'Testing', 7]
+]),
+ts(10, 'Sam', 2026, 8, 28, 'Approved', '', [
+[0, 'Support Ops', 'Support', 8],
+[1, 'Support Ops', 'Support', 8],
+[2, 'Support Ops', 'Support', 8],
+[3, 'CRM Migration', 'Meeting', 4],
+[3, 'Support Ops', 'Support', 4],
+[4, 'Support Ops', 'Support', 8]
+]),
+ts(11, 'Riya', 2026, 9, 5, 'Submitted', '', [
+[0, 'CRM Migration', 'Development', 8],
+[1, 'CRM Migration', 'Development', 8],
+[2, 'CRM Migration', 'Development', 8],
+[3, 'CRM Migration', 'Testing', 8],
+[4, 'Internal Training', 'Admin', 8]
+]),
+ts(12, 'Riya', 2026, 8, 28, 'Rejected', 'Friday hours do not match the project plan. Please review.', [
+[0, 'CRM Migration', 'Development', 8],
+[1, 'CRM Migration', 'Development', 8],
+[2, 'CRM Migration', 'Meeting', 3],
+[3, 'Website Redesign', 'Development', 8],
+[4, 'Website Redesign', 'Development', 10]
+]),
+ts(13, 'Priya', 2026, 9, 12, 'Draft', '', [
+[0, 'Internal Training', 'Admin', 3],
+[1, 'CRM Migration', 'Meeting', 4],
+[2, 'Support Ops', 'Support', 5]
+]),
+ts(14, 'Priya', 2026, 9, 5, 'Submitted', '', [
+[0, 'Internal Training', 'Admin', 4],
+[1, 'CRM Migration', 'Meeting', 6],
+[2, 'Website Redesign', 'Meeting', 5],
+[3, 'Mobile App', 'Meeting', 6],
+[4, 'Support Ops', 'Admin', 5]
+]),
+ts(15, 'Priya', 2026, 8, 28, 'Approved', '', [
+[0, 'CRM Migration', 'Meeting', 6],
+[1, 'Website Redesign', 'Meeting', 6],
+[2, 'Internal Training', 'Admin', 5],
+[3, 'Mobile App', 'Meeting', 6],
+[4, 'Support Ops', 'Admin', 5]
+])
+]
+};
+}
+
+flash(msg) {
+this.setState({ toast: msg });
+clearTimeout(this.toastTimer);
+this.toastTimer = setTimeout(() => this.setState({ toast: '' }), 2600);
+}
+me() {
+return USERS[this.state.user] || USERS.employee;
+}
+curTs() {
+return this.state.timesheets.find((t) => t.id === this.state.tsId) || this.state.timesheets[0];
+}
+updateTs(id, patch) {
+this.setState({ timesheets: this.state.timesheets.map((t) => (t.id === id ? Object.assign({}, t, patch) : t)) });
+}
+isEditable(ts) {
+return !!this.state.user && ts.emp === this.me().name && (ts.status === 'Draft' || ts.status === 'Rejected' || ts.status === 'Submitted');
+}
+isDayOpen(ts, day) {
+const rv = ts.dayReview && ts.dayReview[day];
+return !(rv && rv.status === 'Approved');
+}
+login(key) {
+this.setState({ user: key, screen: key === 'manager' ? 'approvals' : 'home', apprView: 'list', toast: '', selectedId: null, fError: '', aError: '' });
+}
+openAdd(dayIndex) {
+const ts = this.curTs();
+if (!this.isEditable(ts) || !this.isDayOpen(ts, dayIndex)) return;
+this.setState({ screen: 'entry', editId: null, fDate: String(dayIndex), fProject: 'Website Redesign', fTask: 'Development', fHours: '', fNotes: '', fError: '' });
+}
+openEdit(entry) {
+const ts = this.curTs();
+if (!this.isEditable(ts) || !this.isDayOpen(ts, entry.day)) return;
+this.setState({ screen: 'entry', editId: entry.id, fDate: String(entry.day), fProject: entry.project, fTask: entry.task, fHours: String(entry.hours), fNotes: entry.notes || '', fError: '' });
+}
+removeEntry(id) {
+const ts = this.curTs();
+const target = ts.entries.find((e) => e.id === id);
+if (!target || !this.isEditable(ts) || !this.isDayOpen(ts, target.day) || entryRej(ts, target)) return;
+this.updateTs(ts.id, { entries: ts.entries.filter((e) => e.id !== id) });
+}
+newTimesheet() {
+const mine = this.state.timesheets.filter((t) => t.emp === this.me().name);
+const latest = mine.reduce((a, t) => (t.start > a.start ? t : a), mine[0]);
+if (latest.entries.length === 0 && this.isEditable(latest)) {
+this.setState({ screen: 'weekly', tsId: latest.id });
+return;
+}
+const start = new Date(latest.start.getFullYear(), latest.start.getMonth(), latest.start.getDate() + 7);
+const id = this.nextId++;
+this.setState({
+timesheets: this.state.timesheets.concat([{ id: id, emp: this.me().name, start: start, status: 'Draft', comment: '', entries: [] }]),
+tsId: id,
+screen: 'weekly'
+});
+this.flash('New timesheet created');
+}
+saveEntry() {
+const s = this.state;
+const ts = this.curTs();
+const raw = s.fHours.trim();
+const n = parseFloat(raw);
+const day = Number(s.fDate);
+const others = okSum(ts, ts.entries.filter((e) => e.day === day && e.id !== s.editId));
+let err = '';
+if (!raw) err = 'Hours are required.';
+else if (isNaN(n) || n < 0.5 || n > MAX_DAY) err = 'Hours must be between 0.5 and ' + MAX_DAY + '.';
+else if (!this.isDayOpen(ts, day)) err = 'That day is already approved and locked.';
+else if (others + n > MAX_DAY) err = 'Total for this day cannot exceed ' + MAX_DAY + ' hours (' + others + ' already logged).';
+if (err) {
+this.setState({ fError: err });
+return;
+}
+let entries;
+if (s.editId) {
+entries = ts.entries.map((e) => (e.id === s.editId ? Object.assign({}, e, { day: day, project: s.fProject, task: s.fTask, hours: n, notes: s.fNotes }) : e));
+} else {
+entries = ts.entries.concat([{ id: this.nextId++, added: true, day: day, project: s.fProject, task: s.fTask, hours: n, notes: s.fNotes }]);
+}
+this.updateTs(ts.id, { entries: entries });
+this.setState({ screen: 'weekly', fError: '' });
+this.flash('Entry saved');
+}
+decideDay(tsId, day, status) {
+const t = this.state.timesheets.find((x) => x.id === tsId);
+if (!t || this.state.user !== 'manager' || t.status !== 'Submitted' || t.emp === this.me().name) return;
+const key = tsId + '-' + day;
+const typed = this.state.dayComments[key];
+const prev = (t.dayReview || {})[day];
+const note = (typed !== undefined ? typed : prev ? prev.comment : '').trim();
+if (status === 'Rejected' && !note) {
+this.setState({ dayErr: Object.assign({}, this.state.dayErr, { [key]: 'Add a comment to reject this day.' }) });
+return;
+}
+const review = Object.assign({}, t.dayReview || {}, { [day]: { status: status, comment: status === 'Rejected' ? note : '' } });
+const days = Array.from(new Set(t.entries.map((e) => e.day))).sort((a, b) => a - b);
+const open = days.filter((d) => !review[d]);
+const patch = { dayReview: review };
+let msg = dayLabel(t.start, day) + ' ' + (status === 'Approved' ? 'approved' : 'rejected') + ' · ' + t.emp;
+if (open.length === 0) {
+const rej = days.filter((d) => review[d].status === 'Rejected');
+patch.status = rej.length ? 'Rejected' : 'Approved';
+patch.comment = rej.map((d) => dayLabel(t.start, d) + ': ' + review[d].comment).join(' · ');
+msg = 'Timesheet ' + (rej.length ? 'rejected' : 'approved') + ' · ' + t.emp;
+}
+this.updateTs(tsId, patch);
+this.setState({
+dayComments: Object.assign({}, this.state.dayComments, { [key]: status === 'Rejected' ? note : '' }),
+dayErr: Object.assign({}, this.state.dayErr, { [key]: '' }),
+selectedId: open.length === 0 ? null : tsId
+});
+this.flash(msg);
+}
+
+renderVals() {
+const s = this.state;
+const me = this.me();
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const TODAY = new Date(2026, 9, 16);
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const fmt = (d) => d.getDate() + ' ' + MONTHS[d.getMonth()];
+const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+const round = (n) => Math.round(n * 10) / 10;
+const sum = (es) => es.reduce((a, e) => a + e.hours, 0);
+const range = (t) => fmt(t.start) + ' – ' + fmt(addDays(t.start, 6)) + ' ' + addDays(t.start, 6).getFullYear();
+const badgeColor = { Draft: '#605e5c', Submitted: '#0078D4', Approved: '#107C10', Rejected: '#D13438' };
+const baseStart = new Date(2026, 9, 12);
+const reviewOf = (t, d) => {
+if (t.status === 'Draft') return null;
+const rv = (t.dayReview || {})[d];
+if (rv) return rv.status;
+if (t.status === 'Approved') return 'Approved';
+if (t.status === 'Submitted') return 'Pending';
+return null;
+};
+
+const ts = this.curTs();
+const editable = this.isEditable(ts);
+const scr = s.screen;
+const isEmp = s.user === 'employee';
+const isMgr = s.user === 'manager';
+const mine = s.timesheets.filter((t) => t.emp === me.name);
+const pend = s.timesheets.filter((t) => t.status === 'Submitted' && t.emp !== me.name).sort((a, b) => a.emp.localeCompare(b.emp) || b.start - a.start);
+const selTs = pend.find((t) => t.id === s.selectedId) || pend[0] || null;
+const tsNav = scr === 'home' || scr === 'weekly' || scr === 'entry';
+const navOn = 'rgba(255,255,255,0.22)';
+
+// employee home
+const sorted = mine.slice().sort((a, b) => b.start - a.start);
+const items = sorted.map((t) => {
+const wk = 42 + Math.round((t.start - baseStart) / (7 * 86400000));
+return {
+week: range(t),
+sub: t.status === 'Rejected' && t.comment ? 'Manager: ' + t.comment : 'Week ' + wk,
+subColor: t.status === 'Rejected' ? '#A4262C' : '#605e5c',
+hours: round(okSum(t, t.entries)) + ' hrs',
+status: t.status,
+badge: badgeColor[t.status],
+open: () => this.setState({ screen: 'weekly', tsId: t.id })
+};
+});
+const currentWeek = mine.find((t) => same(t.start, baseStart));
+
+// weekly
+const days = DAYS.map((name, i) => {
+const d = addDays(ts.start, i);
+const es = ts.entries.filter((e) => e.day === i);
+const rv = reviewOf(ts, i);
+return {
+name: name,
+review: rv !== null && es.length > 0,
+reviewLabel: rv || '',
+reviewBg: rv === 'Approved' ? '#107C10' : rv === 'Rejected' ? '#D13438' : '#605e5c',
+date: fmt(d),
+total: round(okSum(ts, es)) + ' hrs',
+empty: es.length === 0,
+canEdit: editable && this.isDayOpen(ts, i),
+colBg: i > 4 ? '#faf9f8' : '#ffffff',
+headBg: same(d, TODAY) ? '#deecf9' : '#f3f2f1',
+add: () => this.openAdd(i),
+entries: es.map((e) => ({
+rejected: entryRej(ts, e),
+project: e.project,
+task: e.task,
+hours: e.hours + ' hrs',
+canEdit: editable && this.isDayOpen(ts, i),
+canDelete: editable && this.isDayOpen(ts, i) && !entryRej(ts, e),
+readOnly: !(editable && this.isDayOpen(ts, i)),
+edit: () => this.openEdit(e),
+remove: () => this.removeEntry(e.id)
+}))
+};
+});
+
+// entry form
+const di = Number(s.fDate);
+const logged = round(okSum(ts, ts.entries.filter((e) => e.day === di && e.id !== s.editId)));
+const h = parseFloat(s.fHours);
+const validH = !isNaN(h) && h >= 0.5 && h <= MAX_DAY;
+const dayLabels = DAYS.map((n, i) => n + ' ' + fmt(addDays(ts.start, i)));
+const projects = ['Website Redesign', 'Mobile App', 'CRM Migration', 'Internal Training', 'Support Ops'];
+const tasks = ['Development', 'Meeting', 'Testing', 'Support', 'Admin'];
+
+// manager: approvals
+const selDayNums = selTs ? Array.from(new Set(selTs.entries.map((e) => e.day))).sort((x, y) => x - y) : [];
+const selDays = selDayNums.map((d) => {
+const key = selTs.id + '-' + d;
+const rv = (selTs.dayReview || {})[d];
+const es = selTs.entries.filter((e) => e.day === d);
+const st = rv ? rv.status : 'Pending';
+const typed = s.dayComments[key];
+return {
+label: DAYS[d] + ' ' + fmt(addDays(selTs.start, d)),
+hours: round(sum(es)) + ' hrs',
+status: st,
+badge: st === 'Approved' ? '#107C10' : st === 'Rejected' ? '#D13438' : '#605e5c',
+rows: es.map((e) => ({ p: e.project, t: e.task, h: String(e.hours) })),
+comment: typed !== undefined ? typed : rv ? rv.comment : '',
+error: s.dayErr[key] || '',
+hasError: !!s.dayErr[key],
+onComment: (ev) => this.setState({
+dayComments: Object.assign({}, this.state.dayComments, { [key]: ev.target.value }),
+dayErr: Object.assign({}, this.state.dayErr, { [key]: '' })
+}),
+approve: () => this.decideDay(selTs.id, d, 'Approved'),
+reject: () => this.decideDay(selTs.id, d, 'Rejected')
+};
+});
+
+// manager: report
+const empNames = ['Alex', 'Jordan', 'Sam', 'Riya', 'Priya'];
+const statuses = ['Submitted', 'Approved', 'Rejected'];
+const reportRows = [];
+s.timesheets.slice().sort((a, b) => b.start - a.start || a.emp.localeCompare(b.emp)).forEach((t) => {
+if (t.status === 'Draft') return;
+if (s.rEmp !== 'All' && t.emp !== s.rEmp) return;
+t.entries.slice().sort((a, b) => a.day - b.day).forEach((e) => {
+if (t.status === 'Rejected' && e.added) return;
+const rvd = t.dayReview && t.dayReview[e.day];
+const est = rvd ? rvd.status : t.status;
+if (s.rStatus !== 'All' && est !== s.rStatus) return;
+reportRows.push({
+emp: t.emp,
+week: fmt(t.start) + ' – ' + fmt(addDays(t.start, 6)),
+date: DAYS[e.day] + ' ' + fmt(addDays(t.start, e.day)),
+project: e.project,
+task: e.task,
+hours: e.hours,
+status: est,
+badge: badgeColor[est]
+});
+});
+});
+
+const sumBy = (key, colorOf) => {
+const m = {};
+reportRows.forEach((r) => { m[r[key]] = (m[r[key]] || 0) + r.hours; });
+const arr = Object.keys(m).map((k) => ({ name: k, v: round(m[k]) })).sort((a, b) => b.v - a.v);
+const mx = arr.length ? arr[0].v : 1;
+return arr.map((o) => ({ name: o.name, hours: o.v, pct: Math.max(2, Math.round((o.v / mx) * 100)), color: colorOf(o.name) }));
+};
+const chartProject = sumBy('project', () => '#0078D4');
+const chartEmp = sumBy('emp', () => '#5C2E91');
+const chartStatus = sumBy('status', (n) => badgeColor[n]);
+
+// employee: summary
+const monthIdx = s.period === 'this' ? 9 : 8;
+const byProject = {};
+mine.forEach((t) => t.entries.forEach((e) => {
+const d = addDays(t.start, e.day);
+if (d.getFullYear() === 2026 && d.getMonth() === monthIdx) byProject[e.project] = (byProject[e.project] || 0) + e.hours;
+}));
+const rows = Object.keys(byProject).map((k) => [k, round(byProject[k])]).sort((a, b) => b[1] - a[1]);
+const maxH = rows.length ? rows[0][1] : 1;
+const isThis = s.period === 'this';
+
+return {
+showNav: scr !== 'login',
+isLogin: scr === 'login',
+isEmployee: isEmp,
+showTsNav: !!s.user,
+isManager: isMgr,
+userName: me.name,
+userRole: me.role,
+userInitials: me.initials,
+loginOptions: Object.keys(USERS).map((k) => ({ value: USERS[k].email, label: USERS[k].email, selected: USERS[k].email === s.loginEmail })),
+onLoginEmail: (e) => this.setState({ loginEmail: e.target.value }),
+loginName: userByEmail(s.loginEmail).name,
+loginRole: userByEmail(s.loginEmail).role,
+loginInitials: userByEmail(s.loginEmail).initials,
+loginBg: LOGIN_INFO[userByEmail(s.loginEmail).key].bg,
+loginFg: LOGIN_INFO[userByEmail(s.loginEmail).key].fg,
+loginDesc: LOGIN_INFO[userByEmail(s.loginEmail).key].desc,
+signIn: () => this.login(userByEmail(s.loginEmail).key),
+switchUser: () => this.setState({ screen: 'login', user: null, toast: '' }),
+goStart: () => this.setState({ screen: isMgr ? 'approvals' : 'home', apprView: 'list' }),
+goHome: () => this.setState({ screen: 'home' }),
+goWeekly: () => this.setState({ screen: 'weekly', fError: '' }),
+goApprovals: () => this.setState({ screen: 'approvals', apprView: 'list' }),
+goReports: () => this.setState({ screen: 'reports' }),
+goSummary: () => this.setState({ screen: 'summary' }),
+isHome: scr === 'home' && !!s.user,
+isWeekly: scr === 'weekly' && !!s.user,
+isEntry: scr === 'entry' && !!s.user,
+isSummary: scr === 'summary' && isEmp,
+isApprovals: scr === 'approvals' && isMgr,
+isApprovalsList: scr === 'approvals' && isMgr && !(s.apprView === 'detail' && !!pend.find((t) => t.id === s.selectedId)),
+isReports: scr === 'reports' && isMgr,
+navHomeBg: tsNav ? navOn : 'transparent',
+navSummaryBg: scr === 'summary' ? navOn : 'transparent',
+navApprovalsBg: scr === 'approvals' ? navOn : 'transparent',
+navReportsBg: scr === 'reports' ? navOn : 'transparent',
+navHomeCurrent: tsNav ? 'page' : 'false',
+navSummaryCurrent: scr === 'summary' ? 'page' : 'false',
+navApprovalsCurrent: scr === 'approvals' ? 'page' : 'false',
+navReportsCurrent: scr === 'reports' ? 'page' : 'false',
+pendingCount: pend.length,
+hasPending: pend.length > 0,
+
+items: items,
+thisWeekHours: currentWeek ? round(okSum(currentWeek, currentWeek.entries)) : 0,
+submittedCount: mine.filter((t) => t.status === 'Submitted').length,
+rejectedCount: mine.filter((t) => t.status === 'Rejected').length,
+newTimesheet: () => this.newTimesheet(),
+
+weekRange: range(ts),
+statusText: ts.status,
+badgeBg: badgeColor[ts.status],
+weekTotal: round(okSum(ts, ts.entries)),
+showRejectNote: ts.status === 'Rejected' && ts.comment !== '',
+rejectNote: ts.comment,
+days: days,
+readOnly: !editable,
+submitOff: !editable || ts.status === 'Submitted',
+btnOpacity: (editable && ts.status !== 'Submitted') ? 1 : 0.45,
+submitLabel: ts.status === 'Rejected' ? 'Resubmit' : ts.status === 'Submitted' ? 'Submitted' : 'Submit',
+footNote: ts.status === 'Submitted' ? 'Days not yet approved can still be edited. Approved days are locked.' : editable ? 'Hours per day cannot exceed 8.5. Submit when your week is complete.' : 'Approved timesheets are read-only.',
+submit: () => {
+if (!editable) return;
+const kept = {};
+Object.keys(ts.dayReview || {}).forEach((k) => {
+if (ts.dayReview[k].status === 'Approved') kept[k] = ts.dayReview[k];
+});
+this.updateTs(ts.id, { status: 'Submitted', comment: '', dayReview: kept });
+this.flash('Timesheet submitted for approval');
+},
+
+entryTitle: s.editId ? 'Edit Entry' : 'Add Entry',
+dateOptions: dayLabels.map((l, i) => ({ value: String(i), label: l, selected: String(i) === s.fDate })),
+projectOptions: projects.map((p) => ({ value: p, label: p, selected: p === s.fProject })),
+taskOptions: tasks.map((t) => ({ value: t, label: t, selected: t === s.fTask })),
+fHours: s.fHours,
+fNotes: s.fNotes,
+hoursBorder: s.fError && s.fError.indexOf('Hours') === 0 ? '#D13438' : '#8a8886',
+hasFormError: s.fError !== '',
+fError: s.fError,
+dayLabel: dayLabels[di],
+logged: logged,
+remaining: Math.max(0, round(MAX_DAY - logged)),
+pct: Math.min(100, Math.round((logged / MAX_DAY) * 100)),
+afterText: validH ? 'With this entry: ' + round(logged + h) + ' hrs on ' + dayLabels[di] + '.' : 'Enter hours to preview the day total.',
+onDate: (e) => this.setState({ fDate: e.target.value, fError: '' }),
+onProject: (e) => this.setState({ fProject: e.target.value }),
+onTask: (e) => this.setState({ fTask: e.target.value }),
+onHours: (e) => this.setState({ fHours: e.target.value, fError: '' }),
+onNotes: (e) => this.setState({ fNotes: e.target.value }),
+saveEntry: () => this.saveEntry(),
+
+pending: pend.map((t) => ({
+name: t.emp,
+own: t.emp === me.name,
+week: range(t),
+total: round(okSum(t, t.entries)) + ' hrs',
+progress: Object.keys(t.dayReview || {}).length + ' of ' + new Set(t.entries.map((e) => e.day)).size + ' days reviewed',
+border: selTs && selTs.id === t.id ? '2px solid #0078D4' : '1px solid #e1dfdd',
+bg: selTs && selTs.id === t.id ? '#eff6fc' : '#ffffff',
+select: () => this.setState({ selectedId: t.id, aError: '', apprView: 'detail' })
+})),
+hasSelected: selTs !== null,
+showApprDetail: scr === 'approvals' && isMgr && s.apprView === 'detail' && !!pend.find((t) => t.id === s.selectedId),
+showApprList: !(s.apprView === 'detail' && !!pend.find((t) => t.id === s.selectedId)),
+backAppr: () => this.setState({ apprView: 'list' }),
+tabHomeFg: tsNav ? '#0078D4' : '#605e5c',
+tabSummaryFg: scr === 'summary' ? '#0078D4' : '#605e5c',
+tabApprovalsFg: scr === 'approvals' ? '#0078D4' : '#605e5c',
+tabReportsFg: scr === 'reports' ? '#0078D4' : '#605e5c',
+noneLeft: selTs === null,
+sel: selTs ? { name: selTs.emp, own: selTs.emp === me.name, week: range(selTs), total: round(okSum(selTs, selTs.entries)) + ' hrs', days: selDays } : { name: '', own: false, week: '', total: '', days: [] },
+
+empOptions: [{ value: 'All', label: 'All employees', selected: s.rEmp === 'All' }].concat(empNames.map((n) => ({ value: n, label: n, selected: s.rEmp === n }))),
+statusOptions: [{ value: 'All', label: 'All statuses', selected: s.rStatus === 'All' }].concat(statuses.map((n) => ({ value: n, label: n, selected: s.rStatus === n }))),
+onREmp: (e) => this.setState({ rEmp: e.target.value }),
+onRStatus: (e) => this.setState({ rStatus: e.target.value }),
+reportRows: reportRows,
+reportCount: reportRows.length,
+chartProject, chartEmp, chartStatus, noChart: reportRows.length === 0,
+reportHours: round(reportRows.reduce((a, r) => a + r.hours, 0)),
+
+monthName: isThis ? 'October' : 'September',
+sumTotal: round(rows.reduce((a, r) => a + r[1], 0)),
+projectCount: rows.length,
+topName: rows.length ? rows[0][0] : '–',
+topHours: rows.length ? rows[0][1] : 0,
+bars: rows.map((r) => ({ name: r[0], hours: r[1], pct: Math.round((r[1] / maxH) * 100) })),
+thisPressed: isThis,
+lastPressed: !isThis,
+thisBg: isThis ? '#0078D4' : 'transparent',
+thisFg: isThis ? '#ffffff' : '#201f1e',
+lastBg: !isThis ? '#0078D4' : 'transparent',
+lastFg: !isThis ? '#ffffff' : '#201f1e',
+showThis: () => this.setState({ period: 'this' }),
+showLast: () => this.setState({ period: 'last' }),
+
+hasToast: s.toast !== '',
+toast: s.toast
+};
+}
+}
+</script>
+</body>
+</html>
+
+</body></html>
