@@ -6,7 +6,7 @@ Based on the prototype in [`docs/timetrack-prototype.html`](docs/timetrack-proto
 ## Architecture
 
 ```
- Browser (React + Vite PWA)                Cloudflare Pages
+ Browser (React + Vite PWA)                Cloudflare (Workers static assets)
  ─ React Router, TanStack Query   ◄──────  static build (dist), SPA fallback, security headers
         │
         │ supabase-js (anon key + user JWT)
@@ -33,7 +33,7 @@ Business rules live in the database, not only in the UI:
 | `supabase/seed.sql` | **Dev only** sample users and sheets |
 | `supabase/tests/` | pgTAP tests (RLS and business rules) |
 | `e2e/` | Playwright golden path + axe accessibility checks |
-| `public/_headers`, `public/_redirects` | Cloudflare security headers and SPA fallback |
+| `wrangler.jsonc`, `public/_headers` | Cloudflare deploy config (SPA fallback) and security headers |
 | `docs/` | Prototype, original build prompt, [implementation checklist](docs/checklist.md) |
 
 ## Local setup
@@ -54,8 +54,8 @@ Seed users: `alex@`, `jordan@`, `sam@`, `riya@` (employees) and `priya@contoso.t
 
 | Variable | Where | Notes |
 | --- | --- | --- |
-| `VITE_SUPABASE_URL` | `.env.local`, Cloudflare Pages | Project URL |
-| `VITE_SUPABASE_ANON_KEY` | `.env.local`, Cloudflare Pages | The **anon** (public) key. Never put the service-role key here |
+| `VITE_SUPABASE_URL` | `.env.local`, Cloudflare build variables | Project URL |
+| `VITE_SUPABASE_ANON_KEY` | `.env.local`, Cloudflare build variables | The **anon** (public) key. Never put the service-role key here |
 
 `.env.local` is git-ignored; `.env.example` is committed. If the variables are missing the app shows a "not configured" screen.
 
@@ -90,7 +90,7 @@ update public.app_settings set value = 'true'::jsonb where key = 'managers_see_a
 
 ## Deploy
 
-Costs stay on free tiers: Supabase free plan, Cloudflare Pages free plan, GitHub Actions.
+Costs stay on free tiers: Supabase free plan, Cloudflare Workers free plan, GitHub Actions.
 
 ### 1. Supabase (production project)
 
@@ -101,22 +101,24 @@ Costs stay on free tiers: Supabase free plan, Cloudflare Pages free plan, GitHub
    npx supabase link --project-ref <project-ref>
    npx supabase db push
    ```
-3. Dashboard → Authentication → URL configuration: set **Site URL** to the Pages URL and add it (and `http://localhost:5173`) to **Redirect URLs**. Wildcard `https://*.pages.dev` is useful for PR previews.
+3. Dashboard → Authentication → URL configuration: set **Site URL** to the deployed URL and add it (and `http://localhost:5173`) to **Redirect URLs**. A wildcard such as `https://*.workers.dev` helps with preview URLs.
 4. **Control who can sign up.** Magic links create an account for any email address. Either turn off "Allow new users to sign up" and invite staff (Authentication → Users → Invite), or restrict to your company's domain, before sharing the URL.
 5. Promote your first manager with the SQL above.
 
-### 2. Cloudflare Pages
+### 2. Cloudflare
 
-1. Dashboard → Workers & Pages → Create → Pages → Connect to Git → pick this repo.
-2. Build settings: framework **None**, build command `npm run build`, output directory `dist`.
-3. Environment variables (Production and Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `NODE_VERSION=22`.
-4. Every PR gets a preview deployment automatically; `main` deploys to production.
+The app is a static build served by a Cloudflare Worker with static assets (`wrangler.jsonc`, project name `timetracker`).
 
-`public/_redirects` provides the single-page-app fallback; `public/_headers` sets the CSP (only your Supabase origin: `https://*.supabase.co`), `X-Content-Type-Options`, `Referrer-Policy` and frame protection. If you use a custom Supabase domain, add it to `connect-src` in `_headers`. `style-src 'unsafe-inline'` is needed because React sets inline `style` attributes for the progress and chart bars.
+1. Dashboard → Workers & Pages → Create → Import a repository → pick this repo.
+2. Build command `npm run build`; deploy command `npx wrangler deploy`.
+3. Add **build variables** (Settings → Build → Variables and secrets): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` and `NODE_VERSION=22`. Vite inlines the `VITE_` values at build time, so they must exist at build, not only at runtime.
+4. Pushes to `main` deploy to production; other branches/PRs get preview versions.
+
+`wrangler.jsonc` sets `not_found_handling: single-page-application`, which serves `index.html` for client-side routes (do not add a `_redirects` catch-all; Cloudflare rejects it as a loop). `public/_headers` sets the CSP (only your Supabase origin: `https://*.supabase.co`), `X-Content-Type-Options`, `Referrer-Policy` and frame protection. If you use a custom Supabase domain, add it to `connect-src` in `_headers`. `style-src 'unsafe-inline'` is needed because React sets inline `style` attributes for the progress and chart bars.
 
 ## Roll back
 
-- **App:** Cloudflare Pages → Deployments → pick the previous good deployment → *Rollback to this deployment*.
+- **App:** Cloudflare → your Worker → Deployments → pick the previous good version → *Rollback*.
 - **Database:** migrations are forward-only. Write a new migration that reverses the change (for example `supabase migration new revert_xyz`), test it locally with `supabase db reset`, then `supabase db push`. For data loss use the project's backups (Supabase dashboard → Database → Backups).
 
 ## Notes and limits

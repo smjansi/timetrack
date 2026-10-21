@@ -56,7 +56,7 @@ Maps each prototype screen and business rule to where it is implemented, and lis
 
 ## Not done / still to do
 
-- Cloudflare Pages project and production Supabase project are not created yet (needs your accounts); see the README Deploy section.
+- Cloudflare is deployed as a Worker with static assets (`wrangler.jsonc`) rather than Pages, because that is how the project was created; the SPA fallback therefore lives in `wrangler.jsonc`, not `_redirects`.
 - Branch protection on `main` is not enabled yet.
 - Contrast and install behaviour have not been checked on a physical phone. Axe WCAG A/AA checks pass in CI.
 - `managers_see_all` and `timezone` are changed by SQL only.
