@@ -51,12 +51,13 @@ export function Shell() {
 
   return (
     <div className="app">
+      <a href="#main" className="skip-link">Skip to content</a>
       {!online && (
         <div className="offline-banner" role="status">
           You are offline. You can browse the app, but saving changes needs a connection.
         </div>
       )}
-      <main className="screen"><Outlet /></main>
+      <main id="main" tabIndex={-1} className="screen"><Outlet /></main>
       <BottomNav />
     </div>
   );

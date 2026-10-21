@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Session } from '@supabase/supabase-js';
+import { apiMessage } from '../lib/errors';
 import { supabase } from '../lib/supabase';
 import type { Profile } from '../types';
 
@@ -23,7 +24,7 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
     .select('id, email, full_name, role, manager_id')
     .eq('id', userId)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(apiMessage(error.message));
   return data as Profile | null;
 }
 
@@ -53,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       options: { emailRedirectTo: window.location.origin },
     });
-    return error ? error.message : null;
+    return error ? apiMessage(error.message) : null;
   }, []);
 
   const signOut = useCallback(async () => {

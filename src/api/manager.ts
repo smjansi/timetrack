@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiMessage } from '../lib/errors';
 import { supabase } from '../lib/supabase';
 import type { ReportRow, ReviewEntry, ReviewRow } from '../domain/review';
 import type { ReviewStatus, TsStatus } from '../domain/timesheet';
@@ -61,7 +62,7 @@ export function usePendingTimesheets(managerId: string) {
         .select(SELECT)
         .eq('status', 'Submitted')
         .neq('user_id', managerId);
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(apiMessage(error.message));
       return ((data ?? []) as unknown as RawTimesheet[])
         .map(toItem)
         .sort((a, b) => a.employee.localeCompare(b.employee) || b.week_start.localeCompare(a.week_start));
@@ -76,7 +77,7 @@ export function useReviewTimesheet(id: string | undefined) {
     enabled: !!id,
     queryFn: async (): Promise<PendingItem | null> => {
       const { data, error } = await client().from('timesheets').select(SELECT).eq('id', id as string).maybeSingle();
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(apiMessage(error.message));
       const t = data as unknown as RawTimesheet | null;
       return t && t.status === 'Submitted' ? toItem(t) : null;
     },
@@ -93,7 +94,7 @@ export function useReviewDay() {
         p_status: v.status,
         p_comment: v.comment,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(apiMessage(error.message));
       return data as TsStatus;
     },
     onSuccess: () =>
@@ -111,7 +112,7 @@ export function useTeam() {
     queryKey: ['team'],
     queryFn: async (): Promise<TeamMember[]> => {
       const { data, error } = await client().from('profiles').select('id, full_name').order('full_name');
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(apiMessage(error.message));
       return (data ?? []) as TeamMember[];
     },
   });
@@ -125,7 +126,7 @@ export function useReport(filters: ReportFilters) {
         p_user: filters.userId === 'All' ? null : filters.userId,
         p_status: filters.status === 'All' ? null : filters.status,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(apiMessage(error.message));
       return ((data ?? []) as ReportRow[]).map((r) => ({ ...r, hours: Number(r.hours) }));
     },
   });

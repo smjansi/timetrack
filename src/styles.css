@@ -232,3 +232,8 @@ button.entry-main { cursor: pointer; }
 .btn-approve { background: var(--success); color: #fff; }
 .field-error { font-size: 13px; font-weight: 600; color: var(--danger-dark); }
 .report-row { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; }
+
+.skip-link { position: absolute; left: 8px; top: -60px; z-index: 30; padding: 10px 14px; background: var(--card); color: var(--primary-dark); border-radius: 8px; font-weight: 600; }
+.skip-link:focus { top: 8px; }
+.screen:focus { outline: none; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
