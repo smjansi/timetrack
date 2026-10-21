@@ -4,6 +4,10 @@ import { AuthProvider } from './auth/AuthProvider';
 import { ToastProvider } from './components/Toast';
 import { Shell } from './components/Shell';
 import { ComingSoon } from './pages/ComingSoon';
+import { EntryForm } from './pages/EntryForm';
+import { Home } from './pages/Home';
+import { Summary } from './pages/Summary';
+import { Weekly } from './pages/Weekly';
 import { Login } from './pages/Login';
 
 const queryClient = new QueryClient({
@@ -19,8 +23,11 @@ export function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route element={<Shell />}>
-                <Route index element={<ComingSoon title="My Timesheet" />} />
-                <Route path="summary" element={<ComingSoon title="My summary" />} />
+                <Route index element={<Home />} />
+                <Route path="timesheets/:id" element={<Weekly />} />
+                <Route path="timesheets/:id/entries/new" element={<EntryForm />} />
+                <Route path="timesheets/:id/entries/:entryId" element={<EntryForm />} />
+                <Route path="summary" element={<Summary />} />
                 <Route path="approvals" element={<ComingSoon title="Approvals" />} />
                 <Route path="reports" element={<ComingSoon title="Entries report" />} />
                 <Route path="*" element={<ComingSoon title="Page not found" />} />
