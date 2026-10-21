@@ -32,8 +32,7 @@ function EntryRow({ entry, projects, tasks, canEdit, canDelete, onEdit, onDelete
   return (
     <div className="entry-row">
       {canEdit ? (
-        <button type="button" className="entry-main" onClick={onEdit}
-          aria-label={`Edit ${project}, ${task}, ${entry.hours} hours`}>
+        <button type="button" className="entry-main" onClick={onEdit}>
           {body}
         </button>
       ) : (
