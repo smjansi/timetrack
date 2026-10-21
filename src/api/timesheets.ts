@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiMessage } from '../lib/errors';
 import { supabase } from '../lib/supabase';
 import type { DayReview, Entry, ProjectHours, TsStatus } from '../domain/timesheet';
 
@@ -40,7 +41,7 @@ function client() {
 }
 
 function fail(error: { message: string } | null): void {
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(apiMessage(error.message));
 }
 
 const num = (n: unknown): number => Number(n);

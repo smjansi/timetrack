@@ -5,13 +5,13 @@ import { ToastProvider } from './components/Toast';
 import { Shell } from './components/Shell';
 import { ApprovalDetail } from './pages/ApprovalDetail';
 import { Approvals } from './pages/Approvals';
-import { ComingSoon } from './pages/ComingSoon';
 import { EntryForm } from './pages/EntryForm';
 import { Home } from './pages/Home';
 import { Reports } from './pages/Reports';
 import { Summary } from './pages/Summary';
 import { Weekly } from './pages/Weekly';
 import { Login } from './pages/Login';
+import { NotFound } from './pages/NotFound';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } },
@@ -34,7 +34,7 @@ export function App() {
                 <Route path="approvals" element={<Approvals />} />
                 <Route path="approvals/:id" element={<ApprovalDetail />} />
                 <Route path="reports" element={<Reports />} />
-                <Route path="*" element={<ComingSoon title="Page not found" />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </BrowserRouter>

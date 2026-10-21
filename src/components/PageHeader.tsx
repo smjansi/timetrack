@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import { BackIcon } from './Icons';
@@ -40,6 +40,9 @@ function ProfileMenu() {
 
 export function PageHeader({ title, subtitle, backTo, right }: Props) {
   const navigate = useNavigate();
+  useEffect(() => {
+    document.title = `${title} · TimeTrack`;
+  }, [title]);
   return (
     <header className="page-header">
       {backTo && (
