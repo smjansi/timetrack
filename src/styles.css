@@ -221,3 +221,14 @@ button.entry-main { cursor: pointer; }
 .bar-track { height: 16px; border-radius: 6px; background: var(--page); overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 6px; background: var(--primary); }
 .bar-value { font-size: 13px; font-weight: 600; text-align: right; }
+
+/* manager */
+.approvals-name { font-size: 17px; }
+.review-day { flex: none; display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; }
+.review-entry { font-size: 14px; gap: 8px; }
+.review-actions { display: flex; gap: 10px; }
+.review-actions .btn { flex: 1; font-size: 15px; }
+.btn-reject { background: #fff; color: var(--danger-dark); border: 1.5px solid var(--danger-dark); }
+.btn-approve { background: var(--success); color: #fff; }
+.field-error { font-size: 13px; font-weight: 600; color: var(--danger-dark); }
+.report-row { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; }
