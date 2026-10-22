@@ -11,7 +11,7 @@ interface AuthValue {
   status: AuthStatus;
   profile: Profile | null;
   retry: () => void;
-  signInWithEmail: (email: string) => Promise<string | null>;
+  signInWithPassword: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -48,12 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retry: 1,
   });
 
-  const signInWithEmail = useCallback(async (email: string): Promise<string | null> => {
+  const signInWithPassword = useCallback(async (email: string, password: string): Promise<string | null> => {
     if (!supabase) return 'The app is not connected to Supabase.';
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     return error ? apiMessage(error.message) : null;
   }, []);
 
@@ -75,8 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     else if (profileQuery.isPending) status = 'loading';
     else if (!profileQuery.data) status = 'noProfile';
     else status = 'ready';
-    return { status, profile: profileQuery.data ?? null, retry, signInWithEmail, signOut };
-  }, [session, profileQuery.isError, profileQuery.isPending, profileQuery.data, retry, signInWithEmail, signOut]);
+    return { status, profile: profileQuery.data ?? null, retry, signInWithPassword, signOut };
+  }, [session, profileQuery.isError, profileQuery.isPending, profileQuery.data, retry, signInWithPassword, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
