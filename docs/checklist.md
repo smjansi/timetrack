@@ -6,7 +6,7 @@ Maps each prototype screen and business rule to where it is implemented, and lis
 
 | Prototype screen | Implementation |
 | --- | --- |
-| Login (email) | `src/pages/Login.tsx`, `src/auth/AuthProvider.tsx` (magic link; the role comes from `profiles`) |
+| Login (email) | `src/pages/Login.tsx`, `src/auth/AuthProvider.tsx` (email + password; the role comes from `profiles`) |
 | Not authorised / loading / not configured | `src/components/Shell.tsx`, `src/components/Message.tsx`, `src/auth/access.ts` |
 | Bottom navigation by role, pending badge | `src/components/BottomNav.tsx`, `src/hooks/usePendingCount.ts` |
 | My Timesheet (KPIs, list, New timesheet) | `src/pages/Home.tsx`, `create_next_timesheet` in `supabase/migrations/20261022000003_rpc.sql` |
@@ -44,7 +44,7 @@ Maps each prototype screen and business rule to where it is implemented, and lis
 
 ## Intentional changes from the prototype
 
-- Real auth (magic link) replaces the email dropdown; managers are promoted by SQL.
+- Real auth (email + password, accounts created by an administrator) replaces the email dropdown; managers are promoted by SQL.
 - Managers see their direct reports (`manager_id`) instead of everyone; `app_settings.managers_see_all` restores the prototype behaviour.
 - The rejected state is a stored `entries.is_rejected` flag (prompt requirement) rather than derived from the day review.
 - Rejected entries cannot be edited either (the prototype allowed opening them); employees add corrected entries.

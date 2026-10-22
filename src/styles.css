@@ -106,6 +106,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .login-brand { display: flex; align-items: center; gap: 14px; }
 .login-brand h1 { font-size: 28px; }
+.check-row { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; }
+.check-row input { width: 20px; height: 20px; }
 .logo {
   width: 52px; height: 52px; flex: none; border-radius: 15px; background: var(--primary); color: #fff;
   display: flex; align-items: center; justify-content: center;

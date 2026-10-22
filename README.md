@@ -12,7 +12,7 @@ Based on the prototype in [`docs/timetrack-prototype.html`](docs/timetrack-proto
         │ supabase-js (anon key + user JWT)
         ▼
  Supabase
- ├─ Auth            email magic link
+ ├─ Auth            email + password
  ├─ PostgREST       reads + entry writes, filtered by Row Level Security
  ├─ RPC functions   create_next_timesheet · submit_timesheet · review_day (security definer, role checks)
  │                  report_entries · my_month_summary (security invoker)
@@ -47,8 +47,7 @@ cp .env.example .env.local    # fill with the URL and anon key printed by `supab
 npm run dev                   # http://localhost:5173
 ```
 
-Sign-in is a magic link. Locally, read the email in Inbucket at http://127.0.0.1:54324.
-Seed users: `alex@`, `jordan@`, `sam@`, `riya@` (employees) and `priya@contoso.test` (manager).
+Sign-in is email + password. The seed users (`alex@`, `jordan@`, `sam@`, `riya@` employees and `priya@contoso.test` manager) have no password; set one in Studio (http://127.0.0.1:54323 → Authentication → Users) or create a new user there.
 
 ### Environment variables
 
@@ -103,7 +102,8 @@ Costs stay on free tiers: Supabase free plan, Cloudflare Workers free plan, GitH
    ```
 3. Dashboard → Authentication → URL configuration: set **Site URL** to the deployed URL and add it (and `http://localhost:5173`) to **Redirect URLs**. A wildcard such as `https://*.workers.dev` helps with preview URLs.
 4. **Control who can sign up.** Magic links create an account for any email address. Either turn off "Allow new users to sign up" and invite staff (Authentication → Users → Invite), or restrict to your company's domain, before sharing the URL.
-5. Promote your first manager with the SQL above.
+5. Create users with a password: Authentication → Users → Add user → *Create new user* (tick *Auto Confirm User*). Users cannot sign themselves up from the app. Reset a password from the same page.
+6. Promote your first manager with the SQL above.
 
 ### 2. Cloudflare
 
